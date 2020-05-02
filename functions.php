@@ -17,6 +17,18 @@ function university_features() {
     add_theme_support('title-tag');
 }
 
-
-
 add_action('after_setup_theme', 'university_features');
+
+
+// Custom function
+
+function get_ID_by_slug($page_slug) {
+    // Returns page_id
+    // Pass in page_slug
+    $page = get_page_by_path($page_slug);
+    if ($page) {
+        return $page->ID;
+    } else {
+        return null;
+    }
+}
