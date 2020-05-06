@@ -19,9 +19,29 @@ function university_features() {
 
 add_action('after_setup_theme', 'university_features');
 
+function university_adjust_queries($query) {
+    $today = date('Ymd');
+    
+    if(!is_admin() AND is_post_type_archive('event') AND $query->is_main_query()) {
+        $query->set('meta_key', 'event_date');
+        $query->set('orderby','meta_value_num');
+        $query->set('order', 'ASC');
+        $query->set('meta_query', array(
+                    array(
+                     'key' => 'event_date',
+                        'compare' => '>=',
+                        'value' => $today,
+                        'type' => 'numeric'
+                    )
+                ));
+    }
+}
+
+add_action('pre_get_posts', 'university_adjust_queries');
+
+
 
 // Custom function
-
 function get_ID_by_slug($page_slug) {
     // Returns page_id
     // Pass in page_slug
@@ -32,3 +52,4 @@ function get_ID_by_slug($page_slug) {
         return null;
     }
 }
+
