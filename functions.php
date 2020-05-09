@@ -1,13 +1,15 @@
 <?php
 
 function university_files() {
-	wp_enqueue_style('roboto-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
-	  wp_enqueue_style('font-awesome','//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+    wp_enqueue_style('roboto-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+    wp_enqueue_style('font-awesome','//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 
-	  wp_enqueue_script('slider-script-js', get_theme_file_uri('js/scripts-bundled.js'), NULL, microtime(), true);
+    // Add in your Google Map API key below
+    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=', NULL, '1.0', true);
 
+    wp_enqueue_script('slider-script-js', get_theme_file_uri('js/scripts-bundled.js'), NULL, microtime(), true);
 
-  wp_enqueue_style('university_main_styles', get_stylesheet_uri(), null, microtime());
+    wp_enqueue_style('university_main_styles', get_stylesheet_uri(), null, microtime());
 }
 
 add_action('wp_enqueue_scripts', 'university_files');
@@ -19,6 +21,7 @@ function university_features() {
     add_image_size('professorLandscape', 400, 260, true);
     add_image_size('professorPortrait', 480, 650, true);
     add_image_size('pageBanner',1500,350, true);
+
 }
 
 add_action('after_setup_theme', 'university_features');
@@ -44,6 +47,11 @@ function university_adjust_queries($query) {
                 'type' => 'numeric'
             )
         ));
+    }
+    
+    // Campuses
+    if(!is_admin() AND is_post_type_archive('campus') AND $query->is_main_query()) {
+        $query->set('posts_per_page', -1);
     }
 }
 
@@ -80,6 +88,15 @@ function page_banner($args = null) {
     </div>
 <?php
 }
+
+
+function university_map_key($api) {
+    // Add in your Google Map API Key here
+    $api['key'] = '';
+    return $api;
+}
+
+add_filter('acf/fields/google_map/api', 'university_map_key');
 
 
 
